@@ -131,12 +131,6 @@ function update(time, delta) {
     this.player.setVelocityY(-250);
   }
 
-  if (this.cursors.up.isDown && jump < 3)
-  {
-    jump = 0;
-    this.player.setVelocityY(0);
-  }
-
   if (this.cursors.space.isDown && time > lastFired)
   {
     var bullet = bullets.get();
@@ -144,7 +138,7 @@ function update(time, delta) {
         if (bullet)
         {
             bullet.fire(this.player.x, this.player.y);
-            lastFired = time + 100;
+            lastFired = time + 50;
         }
   }
 
