@@ -16,8 +16,8 @@ var game = new Phaser.Game(config);
 function preload ()
 {
     this.load.image('block', 'assets/character.png');
-    this.load.image('bullet', 'assets/bullet.png')
-    this.load.image('enemy', 'assets/enemy-new.png')
+    this.load.image('bullet', 'assets/bullet.png');
+    this.load.image('enemy', 'assets/enemy-new.png');
 }
 
 function create ()
@@ -29,7 +29,7 @@ function create ()
     blockA.setTypeA().setCheckAgainstB().setActiveCollision().setMaxVelocity(300);
     blockC.setTypeB().setCheckAgainstA().setFixedCollision();
 
-    blockA.setVelocityX(300);
+    blockA.setVelocityX(200);
 
     this.impact.world.on('collide', collide);
 }
@@ -37,4 +37,9 @@ function create ()
 function collide (bodyA, bodyB, axis)
 {
     bodyA.gameObject.setTint(0xff0000);
+}
+
+function killenemy (bullet, aliens)
+{
+    
 }

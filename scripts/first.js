@@ -1,5 +1,5 @@
 var config = {
-    type: Phaser.AUTO,
+    type: Phaser.CANVAS,
     width: 900,
     height: 600,
     physics: {
@@ -109,8 +109,19 @@ function create ()
 
 }
 
+var jump = 0;
+
 function update (time, delta)
 {
+
+    if (player.body.touching.down) {
+        jump = 2;
+    }
+    
+    if (cursors.up.isDown && jump > 0) {
+        jump++;
+        player.body.velocity.y = -270;
+    }
 
     if (cursors.left.isDown)
     {
@@ -121,7 +132,7 @@ function update (time, delta)
         player.x += speed * delta;
     }
 
-    if (cursors.up.isDown && time > lastFired)
+    if (cursors.space.isDown && time > lastFired)
     {
         var bullet = bullets.get();
 
@@ -134,7 +145,7 @@ function update (time, delta)
         //aliens.setCollideWorldBounds(false);
     }
 
-if (cursors.space.isDown && player.body.onFloor()) 
+if (cursors.up.isDown && player.body.onFloor()) 
 {
     player.setVelocityY(-270);
 }
