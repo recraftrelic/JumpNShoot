@@ -1,20 +1,19 @@
 var config = {
-  type: Phaser.WEBGL,
+  type: Phaser.AUTO,
   width: 800,
   height: 600,
+  physics: {
+      default: 'matter',
+      matter: {
+          gravity: {
+              x: 0,
+              y: 0
+          }
+      }
+  },
   scene: {
       preload: preload,
-      create: create,
-      physics: {
-        arcade: {
-          gravity: { y: 100},
-          debug: false
-        },
-        impact: {
-          gravity: 100,
-          debug: false
-        }
-      }
+      create: create
   }
 };
 
@@ -22,29 +21,25 @@ var game = new Phaser.Game(config);
 
 function preload ()
 {
-  this.load.image('block', 'assets/character.png');
-  this.load.image('bullet', 'assets/bullet.png');
-  this.load.image('enemy', 'assets/enemy-new.png');
+  this.load.image('block', 'assets/enemy-new.png');
 }
 
 function create ()
 {
-  var blockA = this.impact.add.image(300, 300, 'bullet');
-  var blockB = this.physics.add.image(60, 300, 'block');
-  var blockC = this.impact.add.image(730, 300, 'enemy');
+  var blockA = this.matter.add.image(0, 300, 'block').setBounce(1).setFriction(0);
 
-  blockB.setBounce(0);
-  blockB.setCollideWorldBounds(true);
+  var blockB = this.matter.add.image(600, 300, 'block').setStatic(true);
 
-  blockA.setTypeA().setCheckAgainstB().setActiveCollision().setMaxVelocity(300);
-  blockC.setTypeB().setCheckAgainstA().setFixedCollision();
+  blockA.setVelocityX(10);
 
-  blockA.setVelocityX(300);
+  this.matter.world.on('collisionstart', function (event, bodyA, bodyB) {
 
-  this.impact.world.on('collide', collide);
+      bodyA.gameObject.setTint(0xff0000);
+      bodyB.gameObject.setTint(0x00ff00);
+
+  });
 }
 
-function collide (bodyA, bodyB, axis)
-{
-  bodyA.gameObject.setTint(0xff0000);
+function kill(){
+  blockB.body.setAllowGravity(true);
 }

@@ -20,6 +20,9 @@ var bullets;
 var speed;
 var stats;
 var lastFired = 0;
+var jump = 0;
+var jumpmax = 2;
+var lastjump = 0;
 
 const game = new Phaser.Game(config);
 
@@ -27,6 +30,7 @@ function preload() {
   this.load.image('spike', '../assets/images/spike.png');
   // At last image must be loaded with its JSON
   this.load.image('player', '../assets/Solid_black.svg');
+  this.load.image('enemy', '../assets/enemy-new.png');
   this.load.image('bullet', '../assets/bullet.png');
   this.load.image('tiles', '../assets/tilesets/platformPack_tilesheet.png');
   // Load the export Tiled JSON
@@ -46,12 +50,12 @@ function create() {
         Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
 
         this.speed = Phaser.Math.GetSpeed(400, 1);
+        this.setScrollFactor(0);
     },
 
     fire: function (x, y)
     {
-        this.setPosition(x +50, y -50);
-        
+        this.setPosition(x +20, y -10);
         this.setActive(true);
         this.setVisible(true);
     },
@@ -59,24 +63,21 @@ function create() {
     update: function (time, delta)
     {
         this.x += this.speed * delta;
-
-        if (this.x > 700)
+        if (this.x > 1000)
         {
             this.setActive(false);
             this.setVisible(false);
         }
     }
+  })
 
-})
-
-bullets = this.physics.add.group({
+  bullets = this.physics.add.group({
     classType: Bullet,
     maxSize: 10,
     runChildUpdate: true
-})
+  })
 
-  speed = Phaser.Math.GetSpeed(300, 1);
-  //this.physics.add.image(60, 60, 'bullet');
+  speed = Phaser.Math.GetSpeed(700, 1);
 
   this.cameras.main.setBackgroundColor("#ffffff");
 
@@ -96,6 +97,12 @@ bullets = this.physics.add.group({
   this.player.setBounce(0.1)
   this.player.setScrollFactor(0)
   this.physics.add.collider(this.player, platforms)
+
+  this.enemy = this.physics.add.sprite(750, 0, 'enemy')
+  this.enemy.setScale(0.25)
+  this.enemy.setBounce(0.1)
+  this.enemy.setScrollFactor(0)
+  this.physics.add.collider(this.enemy, platforms)   
   
   this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -112,38 +119,37 @@ bullets = this.physics.add.group({
   })
 
   this.platforms = platforms
+  
 }
-
-var jump = 0;
 
 function update(time, delta) {
   var cam = this.cameras.main;
 
   cam.scrollX += 8
 
-  if (this.player.body.onFloor()) {
-    jump = 2;
-    this.player.setVelocityY(0);
+  if (this.cursors.up.isDown && jump < jumpmax && time > lastjump) 
+  {
+      this.player.setVelocityY(-350);
+      jump += 1;
+      lastjump = time + 400
   }
 
-  if (this.cursors.up.isDown && jump > 0) {
-    jump++;
-    this.player.setVelocityY(-250);
+  if (this.player.body.onFloor() && jump == jumpmax){
+    jump = 0;
+  }
+
+  if (this.enemy.body.onFloor()){
+    this.enemy.setVelocityY(-150);
   }
 
   if (this.cursors.space.isDown && time > lastFired)
   {
     var bullet = bullets.get();
-
-        if (bullet)
-        {
-            bullet.fire(this.player.x, this.player.y);
-            lastFired = time + 50;
-        }
+    if (bullet)
+    {
+        bullet.fire(this.player.x, this.player.y);
+        lastFired = time + 50;
+        bullet.body.setAllowGravity(false);
+    }
   }
-
-  if (this.cursors.up.isDown && this.player.body.onFloor()) {
-    this.player.setVelocityY(-350);
-  }
-
 }

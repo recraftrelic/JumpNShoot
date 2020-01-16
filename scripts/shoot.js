@@ -38,8 +38,3 @@ function collide (bodyA, bodyB, axis)
 {
     bodyA.gameObject.setTint(0xff0000);
 }
-
-function killenemy (bullet, aliens)
-{
-    
-}

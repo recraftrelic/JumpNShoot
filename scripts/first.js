@@ -33,10 +33,7 @@ function preload ()
     this.load.image('enemy', 'assets/enemy-new.png');
     this.load.image('base', 'assets/ground.png');
     this.load.image('bullet', 'assets/bullet.png');
-    this.load.spritesheet('dude', 
-    'assets/character.png',
-    { frameWidth: 32, frameHeight: 48 }
-    );
+    
 }
 
 var platforms;
@@ -55,7 +52,7 @@ function create ()
         {
             Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
 
-            this.speed = Phaser.Math.GetSpeed(400, 1);
+            this.speed = Phaser.Math.GetSpeed(800, 1);
         },
 
         fire: function (x, y)
@@ -70,7 +67,7 @@ function create ()
         {
             this.x += this.speed * delta;
 
-            if (this.x > 700)
+            if (this.x > 800)
             {
                 this.setActive(false);
                 this.setVisible(false);
@@ -94,7 +91,7 @@ function create ()
     platforms = this.physics.add.staticGroup();
 
     platforms.create(400, 570, 'base');
-    player = this.physics.add.sprite(170, 270, 'dude');
+    player = this.physics.add.sprite(170, 270, 'ship');
 
     this.physics.add.collider(player, platforms);
 
