@@ -22,11 +22,12 @@ var game = new Phaser.Game(config);
 function preload ()
 {
   this.load.image('block', 'assets/enemy-new.png');
+  this.load.image('bullet', 'assets/bullet.png');
 }
 
 function create ()
 {
-  var blockA = this.matter.add.image(0, 300, 'block').setBounce(1).setFriction(0);
+  var blockA = this.matter.add.image(0, 300, 'bullet').setBounce(0).setFriction(0);
 
   var blockB = this.matter.add.image(600, 300, 'block').setStatic(true);
 
@@ -34,12 +35,7 @@ function create ()
 
   this.matter.world.on('collisionstart', function (event, bodyA, bodyB) {
 
-      bodyA.gameObject.setTint(0xff0000);
-      bodyB.gameObject.setTint(0x00ff00);
-
+      bodyB.gameObject.setTint(0xff0000);
+      //bodyB.gameObject.setTint(0x00ff00);
   });
-}
-
-function kill(){
-  blockB.body.setAllowGravity(true);
 }
