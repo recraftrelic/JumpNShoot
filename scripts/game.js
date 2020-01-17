@@ -1,8 +1,8 @@
-/*const config = {
-  type: Phaser.AUTO, // Which renderer to use
-  width: 800, // Canvas width in pixels
-  height: 450, // Canvas height in pixels
-  parent: "game-container", // ID of the DOM element to add the canvas to
+const config = {
+  type: Phaser.CANVAS,
+  width: 800,
+  height: 450,
+  parent: "game-container",
   scene: {
     preload: preload,
     create: create,
@@ -18,6 +18,7 @@
 
 var bullets;
 var speed;
+var controls;
 var stats;
 var lastFired = 0;
 var jump = 0;
@@ -88,15 +89,26 @@ bullets = this.physics.add.group({
   runChildUpdate: true
 })
 
-speed = Phaser.Math.GetSpeed(700, 1);
-this.cameras.main.setBackgroundColor("#ffffff");
-this.cameras.main.setBounds(0, 0, 19000, 200);
-this.cameras.main.setZoom(1);
-this.cameras.main.centerOn(0, 0);
-
 const map = this.make.tilemap({ key: 'map' })
 const tileset = map.addTilesetImage('level1tileset', 'tiles')
-const platforms = map.createStaticLayer('Tile Layer 1', tileset, 0, 0)
+const platforms = map.createDynamicLayer('Tile Layer 1', tileset, 0, 0)
+
+this.cursors = this.input.keyboard.createCursorKeys();
+
+speed = Phaser.Math.GetSpeed(700, 1);
+this.cameras.main.setBackgroundColor("#ffffff");
+this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+this.cameras.main.setZoom(1);
+this.cameras.main.centerOn(0, 0);
+/*var controlConfig = {
+  camera: this.cameras.main,
+  left: this.cursors.left,
+  right: this.cursors.right,
+  speed: 0.3
+};
+
+//controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
+controls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);*/
 
 platforms.setCollisionByExclusion(-1, true);
 
@@ -131,8 +143,6 @@ this.anims.create({
   frameRate: 10,
 });
 
-this.cursors = this.input.keyboard.createCursorKeys();
-
 this.spikes = this.physics.add.group({
   allowGravity: false,
   immovable: true
@@ -143,6 +153,7 @@ const spikeObjects = map.getObjectLayer('Spikes')['objects']
 spikeObjects.forEach(spikeObject => {
   const spike = this.spikes.create(spikeObject.x, spikeObject.y - spikeObject.height, 'spike').setOrigin(0, 0)
   spike.body.setSize(spike.width, spike.height - 30).setOffset(0, 30);
+  spike.setScrollFactor(1)
 })
 this.platforms = platforms
 
@@ -151,7 +162,9 @@ this.physics.add.collider(this.player, this.spikes, playerHit, null, this);
 
 function update(time, delta) {
 var cam = this.cameras.main;
-cam.scrollX += 7
+cam.scrollX += 4
+
+//controls.update(delta);
 
 if (this.cursors.left.isDown) 
 {
@@ -211,9 +224,9 @@ else if (this.player.body.velocity.x < 0)
   this.player.setFlipX(true);
 }
 
-}*/
+}
 
-const config = {
+/*const config = {
   type: Phaser.AUTO, // Which renderer to use
   width: 800, // Canvas width in pixels
   height: 450, // Canvas height in pixels
@@ -241,7 +254,7 @@ player.play('idle', true);
 player.setAlpha(0);
 let tw = this.tweens.add({
   targets: player,
-  alpha: 2,
+  alpha: 1,
   duration: 100,
   ease: 'Linear',
   repeat: 5,
@@ -261,6 +274,9 @@ this.load.tilemapTiledJSON('map', '../assets/tilemaps/level1.json');
 function create() {
 const backgroundImage = this.add.image(0, 0,'background').setOrigin(0, 0)
 backgroundImage.setScale(2, 0.8)
+
+var sky = this.add.image(0, 0, 'background');
+sky.fixedToCamera = true;
 
 const map = this.make.tilemap({ key: 'map' })
 const tileset = map.addTilesetImage('level1tileset', 'tiles')
@@ -350,4 +366,4 @@ if (this.player.body.velocity.x > 0) {
   // otherwise, make them face the other side
   this.player.setFlipX(true);
 }
-}
+}*/
