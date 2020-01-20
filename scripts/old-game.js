@@ -127,7 +127,7 @@ function create() {
 function update(time, delta) {
   var cam = this.cameras.main;
 
-  cam.scrollX += 8
+  cam.scrollX += 4
 
   if (this.cursors.up.isDown && jump < jumpmax && time > lastjump) 
   {
